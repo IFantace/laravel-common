@@ -1,0 +1,27 @@
+{
+  "name": "ifantace/laravel-common",
+  "description": "for laravel common function",
+  "type": "library",
+  "require": {
+    "php": ">=5.6.0",
+    "laravel/framework": ">=5.4"
+  },
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "IFantace",
+      "email": "aa431125@gmail.com"
+    }
+  ],
+  "minimum-stability": "beta",
+  "autoload": {
+    "psr-4": {
+      "Ifantace\\LaravelCommon\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Ifantace\\LaravelCommon\\Tests\\": "tests/"
+    }
+  }
+}

@@ -1,0 +1,317 @@
+<?php
+
+/*
+ * @Author       : Austin
+ * @Date         : 2020-03-25 17:09:18
+ * @LastEditors  : IFantace
+ * @LastEditTime : 2020-12-07 17:49:01
+ * @Description  : {{Description this}}
+ */
+
+namespace Ifantace\LaravelCommon\Objects;
+
+use Exception;
+use Ifantace\LaravelCommon\Traits\CommonTraits;
+
+class CustomResponse
+{
+    use CommonTraits;
+
+    /**
+     * status
+     *
+     * @var int
+     */
+    private $status;
+
+    /**
+     * message
+     *
+     * @var string
+     */
+    private $message;
+
+    /**
+     * ui_message
+     *
+     * @var string
+     */
+    private $ui_message;
+
+    /**
+     * file
+     *
+     * @var string
+     */
+    private $file;
+
+    /**
+     * class
+     *
+     * @var string
+     */
+    private $class;
+
+    /**
+     * function
+     *
+     * @var string
+     */
+    private $function;
+
+    /**
+     * line
+     *
+     * @var int
+     */
+    private $line;
+
+    /**
+     * message
+     *
+     * @var string
+     */
+    private $event_uuid;
+
+    /**
+     * data
+     *
+     * @var array
+     */
+    private $data;
+
+    /**
+     * 建立並初始化event_uuid
+     *
+     * @param string $event_uuid
+     */
+    public function __construct($event_uuid)
+    {
+        $this->event_uuid = $event_uuid;
+    }
+
+    /**
+     * 設定回應的status
+     *
+     * @param int $status > 0: success, -1: 參數錯誤 -2:驗證錯誤 -3:執行錯誤 -4:非預期的錯誤
+     * @return static
+     */
+    public function setStatus(int $status)
+    {
+        $this->status = $status;
+        return $this;
+    }
+
+    /**
+     * 設定回應的message
+     *
+     * @param string $message RD看的message
+     * @return static
+     */
+    public function setMessage($message)
+    {
+        $this->message = $message;
+        return $this;
+    }
+    /**
+     * 設定回應的ui_message
+     *
+     * @param string $ui_message 使用者看的ui_message
+     * @return static
+     */
+    public function setUIMessage($ui_message)
+    {
+        $this->ui_message = $ui_message;
+        return $this;
+    }
+
+    /**
+     * 批次設定必要值
+     *
+     * @param int $status
+     * @param string $message
+     * @param string $ui_message
+     *
+     * @return static
+     */
+    public function setCommon(int $status, $message, $ui_message)
+    {
+        $this->setStatus($status);
+        $this->setMessage($message);
+        $this->setUIMessage($ui_message);
+        return $this;
+    }
+
+    /**
+     * 設定response夾帶的data
+     *
+     * @param array $data key=>value形式
+     * @return static
+     */
+    public function setData(array $data)
+    {
+        $this->data = $data;
+        return $this;
+    }
+
+    /**
+     * 設定此回應的系統資料
+     *
+     * @return static
+     */
+    public function setBacktrace()
+    {
+        $back_trace = debug_backtrace();
+        $caller = array_shift($back_trace);
+        $caller_source = array_shift($back_trace);
+        $this->setFile(isset($caller["file"]) ? $caller["file"] : null);
+        $this->setClass(isset($caller["class"]) ? $caller["class"] : null);
+        $this->setLine(isset($caller["line"]) ? $caller["line"] : null);
+        $this->setFunction(isset($caller_source["function"]) ? $caller_source["function"] : null);
+        return $this;
+    }
+
+    /**
+     * 設定回應的file
+     *
+     * @param string $file 回應的file
+     * @return static
+     */
+    public function setFile($file)
+    {
+        $this->file = $file;
+        return $this;
+    }
+
+    /**
+     * 設定回應的class
+     *
+     * @param string $class 回應的class
+     * @return static
+     */
+    public function setClass($class)
+    {
+        $this->class = $class;
+        return $this;
+    }
+
+    /**
+     * 設定此回應所在的function
+     *
+     * @param string $function function名稱
+     * @return static
+     */
+    public function setFunction($function)
+    {
+        $this->function = $function;
+        return $this;
+    }
+
+    /**
+     * 設定此回應所在的行數
+     *
+     * @param int $line 行數
+     * @return static
+     */
+    public function setLine(int $line)
+    {
+        $this->line = $line;
+        return $this;
+    }
+
+    /**
+     * 發生意外狀況時，所夾帶的Exception檔案
+     * @deprecated 1.0.0
+     *
+     * @param Throwable $error
+     * @return static
+     */
+    public function setException(Exception $error)
+    {
+        $this->error = $error;
+        return $this;
+    }
+
+    /**
+     * 產生response array
+     *
+     * @return array
+     */
+    private function createResponseArray()
+    {
+        $response_array = [
+            "status" => $this->status,
+            "message" => $this->message,
+            "ui_message" => $this->ui_message
+        ];
+        if (isset($this->file) || isset($this->class) || isset($this->function) || isset($this->line)) {
+            $response_array['backtrace'] = [
+                "file" => $this->file,
+                "class" => $this->class,
+                "function" => $this->function,
+                "line" => $this->line
+            ];
+        }
+        if (is_array($this->data)) {
+            foreach ($this->data as $key => $value) {
+                $responseArray[$key] = $value;
+            }
+        }
+        if (isset($this->error)) {
+            $response_array["error"] = [
+                "file" => $this->error->getFile(),
+                "line" => $this->error->getLine(),
+                "message" => $this->error->getMessage(),
+            ];
+        }
+        ksort($response_array);
+        return $response_array;
+    }
+
+    /**
+     * get response array as return
+     *
+     * @return array
+     */
+    public function getResponseArray()
+    {
+        $response_array = $this->createResponseArray();
+        // if ($need_record) {
+        //     $this->recordResponse($response_array);
+        // }
+        unset($response_array["backtrace"]);
+        unset($response_array["error"]);
+        return $response_array;
+    }
+
+    // /**
+    //  * record response array
+    //  *
+    //  * @param array $response_array
+    //  * @return void
+    //  */
+    // private function recordResponse(array $response_array)
+    // {
+    //     Log::info(
+    //         $this->createLogString(
+    //             "Request-Response",
+    //             $response_array,
+    //             $this->event_uuid,
+    //         )
+    //     );
+    // }
+
+    // /**
+    //  * 丟出一個exception，用於中斷程式
+    //  *
+    //  * @param boolean $need_record record response at the same time
+    //  * @return void
+    //  */
+    // public function throwResponseException($need_record = false)
+    // {
+    //     $response_array = $this->getResponseArray($need_record);
+    //     $this_exception = new ResponseException(isset($response_array["message"]) ? $response_array["message"] : "");
+    //     $this_exception->setResponse($response_array);
+    //     throw $this_exception;
+    // }
+}
