@@ -4,7 +4,7 @@
  * @Author       : IFantace
  * @Date         : 2020-11-30 17:46:45
  * @LastEditors  : IFantace
- * @LastEditTime : 2020-12-07 16:48:29
+ * @LastEditTime : 2020-12-07 19:58:15
  * @Description  : 紀錄Request and Response
  */
 
@@ -28,19 +28,31 @@ class RRLog
     public function handle($request, Closure $next)
     {
         $event_uuid = $this->genUuid();
-        Log::info(
-            $this->createLogString(
+        $request_log_string = $this->createLogString(
+            'Request',
+            [
+                'Ip' => $request->ip(),
+                'Method' => $request->method(),
+                'Url' => $request->fullUrl(),
+                'User' => $this->getCurrentUserUuid(),
+                'Parameters' => $request->all()
+            ],
+            $event_uuid
+        );
+        if (strlen($request_log_string) > 2048) {
+            $request_log_string = $this->createLogString(
                 'Request',
                 [
                     'Ip' => $request->ip(),
                     'Method' => $request->method(),
                     'Url' => $request->fullUrl(),
                     'User' => $this->getCurrentUserUuid(),
-                    'Parameters' => $request->all()
+                    'Parameters' => "Too long"
                 ],
                 $event_uuid
-            )
-        );
+            );
+        }
+        Log::info($request_log_string);
         $request->request->add(['event_uuid' => $event_uuid]);
 
         /**
@@ -51,17 +63,27 @@ class RRLog
         if (!is_array($content)) {
             $content = $response->getContent();
         }
-        Log::info(
-            $this->createLogString(
+        $response_log_string = $this->createLogString(
+            'Response',
+            [
+                'StatusCode' => $response->getStatusCode(),
+                'Content' => $content
+
+            ],
+            $event_uuid
+        );
+        if (strlen($response_log_string) > 2048) {
+            $response_log_string =  $this->createLogString(
                 'Response',
                 [
                     'StatusCode' => $response->getStatusCode(),
-                    'Content' => $content
+                    'Content' => "Too long"
 
                 ],
                 $event_uuid
-            )
-        );
+            );
+        }
+        Log::info($response_log_string);
         return $response;
     }
 }
