@@ -81,18 +81,18 @@ trait CommonTraits
      *
      * @param string $event Event name.
      * @param array $data Array of data.
-     * @param string $event_uuid Event uuid.
+     * @param string $event_code Event uuid.
      *
      * @return string Event string of json_encode result
      *
      * @author IFantace <aa431125@gmail.com>
      */
-    public function createLogString($event, array $data, $event_uuid)
+    public function createLogString($event, array $data, $event_code)
     {
         return $this->jsonEncodeUnescaped([
             'EVENT' => $event,
             'DATA' => $data,
-            'EVENT-UUID' => $event_uuid
+            'EVENT-CODE' => $event_code
         ]);
     }
 

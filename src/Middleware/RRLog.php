@@ -4,7 +4,7 @@
  * @Author       : IFantace
  * @Date         : 2020-11-30 17:46:45
  * @LastEditors  : IFantace
- * @LastEditTime : 2020-12-07 19:58:15
+ * @LastEditTime : 2020-12-08 13:00:56
  * @Description  : 紀錄Request and Response
  */
 
@@ -27,7 +27,11 @@ class RRLog
      */
     public function handle($request, Closure $next)
     {
-        $event_uuid = $this->genUuid();
+        $event_code = $request->input('event_code');
+        if ($event_code  === null) {
+            $event_code = $this->generateRandomKey(8);
+            $request->request->add(['event_code' => $event_code]);
+        }
         $request_log_string = $this->createLogString(
             'Request',
             [
@@ -37,7 +41,7 @@ class RRLog
                 'User' => $this->getCurrentUserUuid(),
                 'Parameters' => $request->all()
             ],
-            $event_uuid
+            $event_code
         );
         if (strlen($request_log_string) > 2048) {
             $request_log_string = $this->createLogString(
@@ -49,11 +53,10 @@ class RRLog
                     'User' => $this->getCurrentUserUuid(),
                     'Parameters' => "Too long"
                 ],
-                $event_uuid
+                $event_code
             );
         }
         Log::info($request_log_string);
-        $request->request->add(['event_uuid' => $event_uuid]);
 
         /**
          * @var \Illuminate\Http\Response
@@ -70,7 +73,7 @@ class RRLog
                 'Content' => $content
 
             ],
-            $event_uuid
+            $event_code
         );
         if (strlen($response_log_string) > 2048) {
             $response_log_string =  $this->createLogString(
@@ -80,7 +83,7 @@ class RRLog
                     'Content' => "Too long"
 
                 ],
-                $event_uuid
+                $event_code
             );
         }
         Log::info($response_log_string);

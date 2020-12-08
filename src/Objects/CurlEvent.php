@@ -4,7 +4,7 @@
  * @Author       : Austin
  * @Date         : 2020-03-25 17:09:18
  * @LastEditors  : IFantace
- * @LastEditTime : 2020-12-07 17:24:01
+ * @LastEditTime : 2020-12-08 10:49:48
  * @Description  : {{Description this}}
  */
 
@@ -18,15 +18,15 @@ class CurlEvent
     use CommonTraits;
 
     /**
-     * the uuid of this event
+     * the code of this event
      *
      * @var string
      */
-    private $event_uuid;
+    private $event_code;
 
-    public function __construct($event_uuid = null)
+    public function __construct($event_code = null)
     {
-        $this->event_uuid = $event_uuid !== null ? $event_uuid : $this->genUuid();
+        $this->event_code = $event_code !== null ? $event_code : $this->generateRandomKey(8);
     }
     /**
      * Send request.
@@ -59,7 +59,7 @@ class CurlEvent
                     'Option' => $options,
                     'RequestID' => $request_id
                 ],
-                $this->event_uuid
+                $this->event_code
             )
         );
         $ch = curl_init();
@@ -83,7 +83,7 @@ class CurlEvent
                     'ResponseBody' => $status_code == 0 ? $output : null,
                     'RequestID' => $request_id
                 ],
-                $this->event_uuid
+                $this->event_code
             )
         );
         if ($status_code == 0) {
@@ -98,7 +98,7 @@ class CurlEvent
                         'ErrorMessage' => $error,
                         'RequestID' => $request_id
                     ],
-                    $this->event_uuid
+                    $this->event_code
                 )
             );
             curl_close($ch);

@@ -4,7 +4,7 @@
  * @Author       : Austin
  * @Date         : 2020-03-25 17:09:18
  * @LastEditors  : IFantace
- * @LastEditTime : 2020-12-07 17:49:01
+ * @LastEditTime : 2020-12-08 10:49:19
  * @Description  : {{Description this}}
  */
 
@@ -71,7 +71,7 @@ class CustomResponse
      *
      * @var string
      */
-    private $event_uuid;
+    private $event_code;
 
     /**
      * data
@@ -81,13 +81,13 @@ class CustomResponse
     private $data;
 
     /**
-     * 建立並初始化event_uuid
+     * 建立並初始化event_code
      *
-     * @param string $event_uuid
+     * @param string $event_code
      */
-    public function __construct($event_uuid)
+    public function __construct($event_code)
     {
-        $this->event_uuid = $event_uuid;
+        $this->event_code = $event_code;
     }
 
     /**
@@ -296,7 +296,7 @@ class CustomResponse
     //         $this->createLogString(
     //             "Request-Response",
     //             $response_array,
-    //             $this->event_uuid,
+    //             $this->event_code,
     //         )
     //     );
     // }
