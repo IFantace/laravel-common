@@ -45,6 +45,11 @@ abstract class CommonRepository
         return call_user_func_array(array($this->model, $fun), $args);
     }
 
+    public function __set($key, $value)
+    {
+        $this->model->$key = $value;
+    }
+
     /**
      * init repository
      *
@@ -114,7 +119,7 @@ abstract class CommonRepository
                     $query_all_column->orWhere($each_column, 'like', '%' . $query_string . '%');
                 }
                 foreach ($columns_whereIn as $column_name => $value_array) {
-                    $query_all_column->orWhereIn($column_name, $value_array);
+                    $query_all_column->orWhereRaw($this->createWhereInRaw($column_name, $value_array));
                 }
                 foreach ($columns_change_search as $search_column_name => $change_key_array) {
                     foreach ($change_key_array as $inside_value => $outer_value) {

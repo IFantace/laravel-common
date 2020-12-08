@@ -4,7 +4,7 @@
  * @Author       : IFantace
  * @Date         : 2020-11-30 17:46:45
  * @LastEditors  : IFantace
- * @LastEditTime : 2020-12-08 13:00:56
+ * @LastEditTime : 2020-12-08 14:35:02
  * @Description  : 紀錄Request and Response
  */
 
@@ -56,6 +56,7 @@ class RRLog
                 $event_code
             );
         }
+        // Log::info('Request', ['request' => $request, 'event_code' => $event_code]);
         Log::info($request_log_string);
 
         /**
@@ -86,6 +87,7 @@ class RRLog
                 $event_code
             );
         }
+        // Log::info('Response', ['response' => $response, 'event_code' => $event_code]);
         Log::info($response_log_string);
         return $response;
     }
