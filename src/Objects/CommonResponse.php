@@ -4,7 +4,7 @@
  * @Author       : Austin
  * @Date         : 2020-03-25 17:09:18
  * @LastEditors  : IFantace
- * @LastEditTime : 2020-12-08 10:49:19
+ * @LastEditTime : 2020-12-08 15:56:50
  * @Description  : {{Description this}}
  */
 
@@ -13,7 +13,7 @@ namespace Ifantace\LaravelCommon\Objects;
 use Exception;
 use Ifantace\LaravelCommon\Traits\CommonTraits;
 
-class CustomResponse
+class CommonResponse
 {
     use CommonTraits;
 

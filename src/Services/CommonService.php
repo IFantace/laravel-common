@@ -4,13 +4,13 @@
  * @Author: Austin
  * @Date: 2020-01-09 18:18:25
  * @LastEditors  : IFantace
- * @LastEditTime : 2020-12-07 19:07:43
+ * @LastEditTime : 2020-12-08 16:09:53
  */
 
 namespace Ifantace\LaravelCommon\Services;
 
 use Ifantace\LaravelCommon\Traits\CommonTraits;
-use Ifantace\LaravelCommon\Objects\CustomResponse;
+use Ifantace\LaravelCommon\Objects\CommonResponse;
 use Illuminate\Http\Request;
 
 class CommonService
@@ -22,25 +22,37 @@ class CommonService
      *
      * @var Request
      */
-    protected $input;
+    protected $request;
 
     /**
      * custom response object
      *
-     * @var CustomResponse
+     * @var CommonResponse
      */
     protected $response;
+
+    public function __construct(Request $request = null, CommonResponse $response = null)
+    {
+        if ($request != null) {
+            $this->setRequest($request);
+        }
+        if ($response != null) {
+            $this->setResponse($response);
+        }
+    }
 
     /**
      * Service初始化
      *
-     * @param Request $input
-     * @return void
+     * @param Request $request
+     *
+     * @return static
      */
-    public function init(Request $input, CustomResponse $response)
+    public function init(Request $request, CommonResponse $response)
     {
-        $this->input = $input;
-        $this->response = $response;
+        $this->setRequest($request);
+        $this->setResponse($response);
+        return $this;
     }
 
     /**
@@ -50,11 +62,66 @@ class CommonService
      * @param string $message
      * @param string $ui_message
      * @param array $data
+     *
      * @return static
      */
-    public function setResponse(int $status, $message, $ui_message, array $data = [])
+    public function setResponseData(int $status, $message, $ui_message, array $data = [])
     {
         $this->response->setStatus($status)->setMessage($message)->setUIMessage($ui_message)->setData($data);
+        return $this;
+    }
+
+    /**
+     * Get request from route
+     *
+     * @return Request
+     *
+     * @author IFantace <aa431125@gmail.com>
+     */
+    public function getRequest()
+    {
+        return $this->request;
+    }
+
+    /**
+     * Set request from route
+     *
+     * @param Request $request request from route
+     *
+     * @return static
+     *
+     * @author IFantace <aa431125@gmail.com>
+     */
+    public function setRequest(Request $request)
+    {
+        $this->request = $request;
+        return $this;
+    }
+
+    /**
+     * Get custom response object
+     *
+     * @return CommonResponse
+     *
+     * @author IFantace <aa431125@gmail.com>
+     */
+    public function getResponse()
+    {
+        return $this->response;
+    }
+
+    /**
+     * Set custom response object
+     *
+     * @param CommonResponse $response custom response object
+     *
+     * @return self
+     *
+     * @author IFantace <aa431125@gmail.com>
+     */
+    public function setResponse(CommonResponse $response)
+    {
+        $this->response = $response;
         return $this;
     }
 }
