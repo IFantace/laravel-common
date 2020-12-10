@@ -40,7 +40,7 @@ trait CommonTraits
      *
      * @author IFantace <aa431125@gmail.com>
      */
-    public function generateRandomKey(int $length, int $mode = 7)
+    public function generateRandomKey($length, $mode = 7)
     {
         if ($mode === 0 || $mode > 7 || $length === 0) {
             return false;

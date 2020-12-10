@@ -4,7 +4,7 @@
  * @Author: Austin
  * @Date: 2020-01-09 18:18:25
  * @LastEditors  : IFantace
- * @LastEditTime : 2020-12-08 16:09:53
+ * @LastEditTime : 2020-12-10 12:47:36
  */
 
 namespace Ifantace\LaravelCommon\Services;
@@ -65,7 +65,7 @@ class CommonService
      *
      * @return static
      */
-    public function setResponseData(int $status, $message, $ui_message, array $data = [])
+    public function setResponseData($status, $message, $ui_message, array $data = [])
     {
         $this->response->setStatus($status)->setMessage($message)->setUIMessage($ui_message)->setData($data);
         return $this;

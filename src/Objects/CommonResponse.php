@@ -4,7 +4,7 @@
  * @Author       : Austin
  * @Date         : 2020-03-25 17:09:18
  * @LastEditors  : IFantace
- * @LastEditTime : 2020-12-08 15:56:50
+ * @LastEditTime : 2020-12-10 12:47:25
  * @Description  : {{Description this}}
  */
 
@@ -96,7 +96,7 @@ class CommonResponse
      * @param int $status > 0: success, -1: 參數錯誤 -2:驗證錯誤 -3:執行錯誤 -4:非預期的錯誤
      * @return static
      */
-    public function setStatus(int $status)
+    public function setStatus($status)
     {
         $this->status = $status;
         return $this;
@@ -134,7 +134,7 @@ class CommonResponse
      *
      * @return static
      */
-    public function setCommon(int $status, $message, $ui_message)
+    public function setCommon($status, $message, $ui_message)
     {
         $this->setStatus($status);
         $this->setMessage($message);
