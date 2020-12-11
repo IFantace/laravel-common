@@ -4,7 +4,7 @@
  * @Author       : Austin
  * @Date         : 2020-03-25 17:09:18
  * @LastEditors  : IFantace
- * @LastEditTime : 2020-12-11 16:46:06
+ * @LastEditTime : 2020-12-11 16:57:38
  * @Description  : curl操作物件
  */
 
@@ -122,7 +122,7 @@ class CurlEvent
      *
      * @author IFantace <aa431125@gmail.com>
      */
-    public function getEventCode(): string
+    public function getEventCode()
     {
         return $this->event_code;
     }
@@ -136,7 +136,7 @@ class CurlEvent
      *
      * @author IFantace <aa431125@gmail.com>
      */
-    public function setEventCode(string $event_code)
+    public function setEventCode($event_code)
     {
         $this->event_code = $event_code;
         return $this;

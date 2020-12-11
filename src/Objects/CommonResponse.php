@@ -4,7 +4,7 @@
  * @Author       : IFantace
  * @Date         : 2020-11-30 17:46:45
  * @LastEditors  : IFantace
- * @LastEditTime : 2020-12-11 16:09:02
+ * @LastEditTime : 2020-12-11 16:57:07
  * @Description  : 自定義回應物件
  */
 
@@ -218,7 +218,7 @@ class CommonResponse
      *
      * @return $this
      */
-    public function setLine(int $line)
+    public function setLine($line)
     {
         $this->line = $line;
         return $this;
