@@ -1,24 +1,21 @@
 <?php
 
 /*
- * @Author       : Austin
- * @Date         : 2020-03-25 17:09:18
+ * @Author       : IFantace
+ * @Date         : 2020-11-30 17:46:45
  * @LastEditors  : IFantace
- * @LastEditTime : 2020-12-10 12:47:25
- * @Description  : {{Description this}}
+ * @LastEditTime : 2020-12-11 16:09:02
+ * @Description  : 自定義回應物件
  */
 
 namespace Ifantace\LaravelCommon\Objects;
 
 use Exception;
-use Ifantace\LaravelCommon\Traits\CommonTraits;
 
 class CommonResponse
 {
-    use CommonTraits;
-
     /**
-     * status
+     * 狀態碼
      *
      * @var int
      */
@@ -94,7 +91,8 @@ class CommonResponse
      * 設定回應的status
      *
      * @param int $status > 0: success, -1: 參數錯誤 -2:驗證錯誤 -3:執行錯誤 -4:非預期的錯誤
-     * @return static
+     *
+     * @return $this
      */
     public function setStatus($status)
     {
@@ -106,7 +104,8 @@ class CommonResponse
      * 設定回應的message
      *
      * @param string $message RD看的message
-     * @return static
+     *
+     * @return $this
      */
     public function setMessage($message)
     {
@@ -117,7 +116,8 @@ class CommonResponse
      * 設定回應的ui_message
      *
      * @param string $ui_message 使用者看的ui_message
-     * @return static
+     *
+     * @return $this
      */
     public function setUIMessage($ui_message)
     {
@@ -132,7 +132,7 @@ class CommonResponse
      * @param string $message
      * @param string $ui_message
      *
-     * @return static
+     * @return $this
      */
     public function setCommon($status, $message, $ui_message)
     {
@@ -146,7 +146,8 @@ class CommonResponse
      * 設定response夾帶的data
      *
      * @param array $data key=>value形式
-     * @return static
+     *
+     * @return $this
      */
     public function setData(array $data)
     {
@@ -157,7 +158,7 @@ class CommonResponse
     /**
      * 設定此回應的系統資料
      *
-     * @return static
+     * @return $this
      */
     public function setBacktrace()
     {
@@ -175,7 +176,8 @@ class CommonResponse
      * 設定回應的file
      *
      * @param string $file 回應的file
-     * @return static
+     *
+     * @return $this
      */
     public function setFile($file)
     {
@@ -187,7 +189,8 @@ class CommonResponse
      * 設定回應的class
      *
      * @param string $class 回應的class
-     * @return static
+     *
+     * @return $this
      */
     public function setClass($class)
     {
@@ -199,7 +202,8 @@ class CommonResponse
      * 設定此回應所在的function
      *
      * @param string $function function名稱
-     * @return static
+     *
+     * @return $this
      */
     public function setFunction($function)
     {
@@ -211,7 +215,8 @@ class CommonResponse
      * 設定此回應所在的行數
      *
      * @param int $line 行數
-     * @return static
+     *
+     * @return $this
      */
     public function setLine(int $line)
     {
@@ -221,10 +226,10 @@ class CommonResponse
 
     /**
      * 發生意外狀況時，所夾帶的Exception檔案
-     * @deprecated 1.0.0
      *
      * @param Throwable $error
-     * @return static
+     *
+     * @return $this
      */
     public function setException(Exception $error)
     {

@@ -1,11 +1,11 @@
 <?php
 
 /*
- * @Author       : Austin
- * @Date         : 2020-03-25 17:09:18
- * @LastEditors  : Austin
- * @LastEditTime : 2020-07-02 18:27:07
- * @Description  : {{Description this}}
+ * @Author       : IFantace
+ * @Date         : 2020-11-30 17:46:45
+ * @LastEditors  : IFantace
+ * @LastEditTime : 2020-12-11 16:43:12
+ * @Description  : 自定義例外物件
  */
 
 namespace Ifantace\LaravelCommon\Objects;
@@ -43,7 +43,8 @@ class ResponseException extends \Exception
      * set response object
      *
      * @param array $response
-     * @return Ifantace\LaravelCommon\Objects\ResponseException
+     *
+     * @return $this
      */
     public function setResponse(array $response)
     {

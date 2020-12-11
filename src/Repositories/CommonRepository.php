@@ -1,5 +1,13 @@
 <?php
 
+/*
+ * @Author       : IFantace
+ * @Date         : 2020-11-30 17:46:45
+ * @LastEditors  : IFantace
+ * @LastEditTime : 2020-12-11 16:44:31
+ * @Description  : 資料庫邏輯部分
+ */
+
 namespace Ifantace\LaravelCommon\Repositories;
 
 use Illuminate\Database\Eloquent\Model;
@@ -66,7 +74,8 @@ abstract class CommonRepository
      * set model
      *
      * @param Model $model model
-     * @return static
+     *
+     * @return $this
      */
     public function setModel(Model $model)
     {
@@ -102,7 +111,8 @@ abstract class CommonRepository
      * eq. ["A"=> ["1" => "正常","0" => "關閉中","-1" => "申請中","-2" => "拒絕申請",]]
      * @param array $special_column two-dimensional array
      * eq. ["A"=> ["1", "0", "-1", "-2"]]
-     * @return static
+     *
+     * @return $this
      */
     public function searchAllColumn(
         $query_string,
@@ -144,6 +154,7 @@ abstract class CommonRepository
      * select: array => column need to select,
      * with: array => search relation,
      * with_count: array => count relation
+     *
      * @return array
      */
     public function getTable(array $table_config)

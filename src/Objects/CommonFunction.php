@@ -1,13 +1,19 @@
 <?php
 
-namespace Ifantace\LaravelCommon\Traits;
+/*
+ * @Author       : IFantace
+ * @Date         : 2020-12-11 11:45:28
+ * @LastEditors  : IFantace
+ * @LastEditTime : 2020-12-11 13:02:49
+ * @Description  : 常用的function
+ */
+
+namespace Ifantace\LaravelCommon\Objects;
 
 use DateTime;
-use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Auth;
 
-trait CommonTraits
+final class CommonFunction
 {
     /**
      * Load json file in config/json folder.
@@ -20,7 +26,7 @@ trait CommonTraits
      *
      * @author IFantace <aa431125@gmail.com>
      */
-    public function loadConfigJson($file_name)
+    final public static function loadConfigJson($file_name)
     {
         if (is_string($file_name)) {
             $file_name = $file_name;
@@ -40,7 +46,7 @@ trait CommonTraits
      *
      * @author IFantace <aa431125@gmail.com>
      */
-    public function generateRandomKey($length, $mode = 7)
+    final public static function generateRandomKey($length, $mode = 7)
     {
         if ($mode === 0 || $mode > 7 || $length === 0) {
             return false;
@@ -71,7 +77,7 @@ trait CommonTraits
      * @return string|false String of json_encode result
      *
      */
-    public function jsonEncodeUnescaped(array $array)
+    final public static function jsonEncodeUnescaped(array $array)
     {
         return json_encode($array, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
     }
@@ -87,9 +93,9 @@ trait CommonTraits
      *
      * @author IFantace <aa431125@gmail.com>
      */
-    public function createLogString($event, array $data, $event_code)
+    final public static function createLogString($event, array $data, $event_code)
     {
-        return $this->jsonEncodeUnescaped([
+        return self::jsonEncodeUnescaped([
             'EVENT' => $event,
             'DATA' => $data,
             'EVENT-CODE' => $event_code
@@ -103,7 +109,7 @@ trait CommonTraits
      *
      * @author IFantace <aa431125@gmail.com>
      */
-    public function genUuid()
+    final public static function genUuid()
     {
         return sprintf(
             '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
@@ -136,26 +142,9 @@ trait CommonTraits
      *
      * @author IFantace <aa431125@gmail.com>
      */
-    public function validateDate($datetime, $format = 'Y-m-d H:i:s')
+    final public static function validateDate($datetime, $format = 'Y-m-d H:i:s')
     {
         $d = DateTime::createFromFormat($format, $datetime);
         return $d && $d->format($format) == $datetime;
-    }
-
-    /**
-     * Get the uuid of current user.
-     *
-     * @return string|null Uuid of user.
-     *
-     * @author IFantace <aa431125@gmail.com>
-     */
-    public function getCurrentUserUuid()
-    {
-        $user = Auth::user();
-        if ($user !== null) {
-            return $user['uuid'];
-        } else {
-            return null;
-        }
     }
 }

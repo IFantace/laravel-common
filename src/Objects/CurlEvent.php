@@ -4,19 +4,16 @@
  * @Author       : Austin
  * @Date         : 2020-03-25 17:09:18
  * @LastEditors  : IFantace
- * @LastEditTime : 2020-12-08 10:49:48
- * @Description  : {{Description this}}
+ * @LastEditTime : 2020-12-11 16:46:06
+ * @Description  : curl操作物件
  */
 
 namespace Ifantace\LaravelCommon\Objects;
 
-use Ifantace\LaravelCommon\Traits\CommonTraits;
 use Illuminate\Support\Facades\Log;
 
 class CurlEvent
 {
-    use CommonTraits;
-
     /**
      * the code of this event
      *
@@ -26,8 +23,9 @@ class CurlEvent
 
     public function __construct($event_code = null)
     {
-        $this->event_code = $event_code !== null ? $event_code : $this->generateRandomKey(8);
+        $this->event_code = $event_code !== null ? $event_code : CommonFunction::generateRandomKey(8);
     }
+
     /**
      * Send request.
      *
@@ -48,20 +46,31 @@ class CurlEvent
             CURLOPT_TIMEOUT => 15
         ]
     ) {
-        $request_id = $this->generateRandomKey(8);
+        $request_id = CommonFunction::generateRandomKey(8);
         Log::info(
-            $this->createLogString(
+            CommonFunction::createLogString(
                 'CurlSend',
                 [
                     'Url' => $url,
                     'Header' => $header,
-                    'Data' => $this->jsonEncodeUnescaped($data),
+                    'Data' => CommonFunction::jsonEncodeUnescaped($data),
                     'Option' => $options,
                     'RequestID' => $request_id
                 ],
                 $this->event_code
             )
         );
+        if (isset($data['params'])) {
+            if (is_array($data['params'])) {
+                $this_params = http_build_query($data['params']);
+                if (strpos($url, '?') === false) {
+                    $url .= '?';
+                } else {
+                    $url .= '&';
+                }
+                $url .= $this_params;
+            }
+        }
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
@@ -76,7 +85,7 @@ class CurlEvent
         $output = curl_exec($ch);
         $status_code = curl_errno($ch);
         Log::info(
-            $this->createLogString(
+            CommonFunction::createLogString(
                 'CurlReceive',
                 [
                     'StatusCode' => $status_code,
@@ -92,7 +101,7 @@ class CurlEvent
         } else {
             $error = curl_error($ch);
             Log::warning(
-                $this->createLogString(
+                CommonFunction::createLogString(
                     'CurlError',
                     [
                         'ErrorMessage' => $error,
@@ -104,5 +113,32 @@ class CurlEvent
             curl_close($ch);
             return $error;
         }
+    }
+
+    /**
+     * Get the code of this event
+     *
+     * @return string
+     *
+     * @author IFantace <aa431125@gmail.com>
+     */
+    public function getEventCode(): string
+    {
+        return $this->event_code;
+    }
+
+    /**
+     * Set the code of this event
+     *
+     * @param string $event_code the code of this event
+     *
+     * @return $this
+     *
+     * @author IFantace <aa431125@gmail.com>
+     */
+    public function setEventCode(string $event_code)
+    {
+        $this->event_code = $event_code;
+        return $this;
     }
 }

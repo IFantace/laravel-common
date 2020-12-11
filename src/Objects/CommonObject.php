@@ -4,19 +4,16 @@
  * @Author       : IFantace
  * @Date         : 2020-11-30 17:46:45
  * @LastEditors  : IFantace
- * @LastEditTime : 2020-12-07 17:21:59
- * @Description  : 針對單一資料的操作
+ * @LastEditTime : 2020-12-11 16:06:29
+ * @Description  : 單一資料的物件，上頭編寫操作功能
  */
 
 namespace Ifantace\LaravelCommon\Objects;
 
-use Ifantace\LaravelCommon\Traits\CommonTraits;
 use Illuminate\Support\Facades\Auth;
 
 abstract class CommonObject
 {
-    use CommonTraits;
-
     /**
      * 用來操作的repository
      *
@@ -63,6 +60,8 @@ abstract class CommonObject
      * 初始化，如果有primary key，則搜尋並設定data
      *
      * @param string $primary_key
+     *
+     * @author IFantace <aa431125@gmail.com>
      */
     public function __construct($primary_key = null)
     {
@@ -81,6 +80,8 @@ abstract class CommonObject
      * 設定操作者
      *
      * @return void
+     *
+     * @author IFantace <aa431125@gmail.com>
      */
     protected function setCreator()
     {
@@ -91,7 +92,10 @@ abstract class CommonObject
      * 透過primary key取得並設定此物件
      *
      * @param string $primary_key 主鍵
+     *
      * @return bool
+     *
+     * @author IFantace <aa431125@gmail.com>
      */
     public function setDataByPrimary($primary_key)
     {
@@ -108,7 +112,10 @@ abstract class CommonObject
      *
      * @param array|object $data 來源資料
      * @param array $columns
-     * @return static
+     *
+     * @return $this
+     *
+     * @author IFantace <aa431125@gmail.com>
      */
     public function setData($data, $columns = null)
     {
@@ -129,7 +136,10 @@ abstract class CommonObject
      * 透過指定的欄位取得資料array
      *
      * @param array $columns
+     *
      * @return array
+     *
+     * @author IFantace <aa431125@gmail.com>
      */
     public function filterByColumn($columns)
     {
@@ -144,6 +154,8 @@ abstract class CommonObject
      * 透過可全部的欄位過濾資料
      *
      * @return array
+     *
+     * @author IFantace <aa431125@gmail.com>
      */
     public function filterColumnByAllColumn()
     {
@@ -154,6 +166,8 @@ abstract class CommonObject
      * 透過可新增的欄位過濾資料
      *
      * @return array
+     *
+     * @author IFantace <aa431125@gmail.com>
      */
     public function filterColumnByFillableColumn()
     {
@@ -164,6 +178,8 @@ abstract class CommonObject
      * 透過可設定的欄位過濾資料
      *
      * @return array
+     *
+     * @author IFantace <aa431125@gmail.com>
      */
     public function filterColumnBySettableColumn()
     {
@@ -174,6 +190,8 @@ abstract class CommonObject
      * 透過設定的可更新的欄位過濾資料
      *
      * @return array
+     *
+     * @author IFantace <aa431125@gmail.com>
      */
     public function filterColumnByUpdatableColumn()
     {
@@ -184,7 +202,10 @@ abstract class CommonObject
      * 取得指定的資料欄位array
      *
      * @param string $column_name
+     *
      * @return array
+     *
+     * @author IFantace <aa431125@gmail.com>
      */
     public function getColumn($column_name = "all_column")
     {
@@ -206,21 +227,25 @@ abstract class CommonObject
     /**
      * 初始化Object欄位all_column, fillable_column, updatable_column, settable_column
      *
-     * @return bool
+     * @return void
+     *
+     * @author IFantace <aa431125@gmail.com>
      */
-    abstract public function initColumn();
+    abstract protected function initColumn();
 
     /**
      * 初始化由系統指定的欄位
      *
-     * @return bool
+     * @return void
+     *
+     * @author IFantace <aa431125@gmail.com>
      */
-    abstract public function initSystemData();
+    abstract protected function initSystemData();
 
     /**
      * 建立資料
      *
-     * @return bool
+     * @return \lluminate\Database\Eloquent\Model|null
      */
     abstract public function create();
 
@@ -241,14 +266,15 @@ abstract class CommonObject
     /**
      * 搜尋重複unique欄位的資料
      *
-     * @return bool
+     * @return \lluminate\Database\Eloquent\Model|null
      */
     abstract public function findDuplicate();
 
     /**
      * 搜尋指定的Primary的資料
      *
-     * @param mixed $primary_key
+     * @param string|int $primary_key
+     *
      * @return \Illuminate\Database\Eloquent\Model｜null
      */
     abstract public function findDataByPrimary($primary_key);

@@ -4,20 +4,19 @@
  * @Author       : IFantace
  * @Date         : 2020-11-30 17:46:45
  * @LastEditors  : IFantace
- * @LastEditTime : 2020-12-08 14:35:02
+ * @LastEditTime : 2020-12-11 12:58:28
  * @Description  : 紀錄Request and Response
  */
 
 namespace Ifantace\LaravelCommon\Middleware;
 
 use Closure;
-use Ifantace\LaravelCommon\Traits\CommonTraits;
+use Ifantace\LaravelCommon\Objects\CommonFunction;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class RRLog
 {
-    use CommonTraits;
-
     /**
      * Handle an incoming request.
      *
@@ -29,28 +28,29 @@ class RRLog
     {
         $event_code = $request->input('event_code');
         if ($event_code  === null) {
-            $event_code = $this->generateRandomKey(8);
+            $event_code = CommonFunction::generateRandomKey(8);
             $request->request->add(['event_code' => $event_code]);
         }
-        $request_log_string = $this->createLogString(
+        $user = Auth::user();
+        $request_log_string = CommonFunction::createLogString(
             'Request',
             [
                 'Ip' => $request->ip(),
                 'Method' => $request->method(),
                 'Url' => $request->fullUrl(),
-                'User' => $this->getCurrentUserUuid(),
+                'UserID' => $user == null ? null : $user->id,
                 'Parameters' => $request->all()
             ],
             $event_code
         );
         if (strlen($request_log_string) > 2048) {
-            $request_log_string = $this->createLogString(
+            $request_log_string = CommonFunction::createLogString(
                 'Request',
                 [
                     'Ip' => $request->ip(),
                     'Method' => $request->method(),
                     'Url' => $request->fullUrl(),
-                    'User' => $this->getCurrentUserUuid(),
+                    'UserID' => $user == null ? null : $user->id,
                     'Parameters' => "Too long"
                 ],
                 $event_code
@@ -67,7 +67,7 @@ class RRLog
         if (!is_array($content)) {
             $content = $response->getContent();
         }
-        $response_log_string = $this->createLogString(
+        $response_log_string = CommonFunction::createLogString(
             'Response',
             [
                 'StatusCode' => $response->getStatusCode(),
@@ -77,7 +77,7 @@ class RRLog
             $event_code
         );
         if (strlen($response_log_string) > 2048) {
-            $response_log_string =  $this->createLogString(
+            $response_log_string =  CommonFunction::createLogString(
                 'Response',
                 [
                     'StatusCode' => $response->getStatusCode(),

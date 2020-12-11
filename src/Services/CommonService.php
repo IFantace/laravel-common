@@ -1,22 +1,20 @@
 <?php
 
 /*
- * @Author: Austin
- * @Date: 2020-01-09 18:18:25
+ * @Author       : IFantace
+ * @Date         : 2020-11-30 17:46:45
  * @LastEditors  : IFantace
- * @LastEditTime : 2020-12-10 12:47:36
+ * @LastEditTime : 2020-12-11 16:45:00
+ * @Description  : 商業邏輯的部份
  */
 
 namespace Ifantace\LaravelCommon\Services;
 
-use Ifantace\LaravelCommon\Traits\CommonTraits;
 use Ifantace\LaravelCommon\Objects\CommonResponse;
 use Illuminate\Http\Request;
 
 class CommonService
 {
-    use CommonTraits;
-
     /**
      * request from route
      *
@@ -33,10 +31,10 @@ class CommonService
 
     public function __construct(Request $request = null, CommonResponse $response = null)
     {
-        if ($request != null) {
+        if ($request !== null) {
             $this->setRequest($request);
         }
-        if ($response != null) {
+        if ($response !== null) {
             $this->setResponse($response);
         }
     }
@@ -46,7 +44,7 @@ class CommonService
      *
      * @param Request $request
      *
-     * @return static
+     * @return $this
      */
     public function init(Request $request, CommonResponse $response)
     {
@@ -63,7 +61,7 @@ class CommonService
      * @param string $ui_message
      * @param array $data
      *
-     * @return static
+     * @return $this
      */
     public function setResponseData($status, $message, $ui_message, array $data = [])
     {
@@ -88,7 +86,7 @@ class CommonService
      *
      * @param Request $request request from route
      *
-     * @return static
+     * @return $this
      *
      * @author IFantace <aa431125@gmail.com>
      */
@@ -115,7 +113,7 @@ class CommonService
      *
      * @param CommonResponse $response custom response object
      *
-     * @return self
+     * @return $this
      *
      * @author IFantace <aa431125@gmail.com>
      */
