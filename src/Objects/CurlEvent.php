@@ -4,7 +4,7 @@
  * @Author       : Austin
  * @Date         : 2020-03-25 17:09:18
  * @LastEditors  : IFantace
- * @LastEditTime : 2020-12-11 16:57:38
+ * @LastEditTime : 2020-12-25 16:10:20
  * @Description  : curl操作物件
  */
 
@@ -77,7 +77,7 @@ class CurlEvent
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
         if (isset($data['body'])) {
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $data['body']);
         }
         foreach ($options as $key => $value) {
             curl_setopt($ch, $key, $value);
