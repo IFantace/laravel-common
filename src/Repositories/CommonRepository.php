@@ -4,7 +4,7 @@
  * @Author       : IFantace
  * @Date         : 2020-11-30 17:46:45
  * @LastEditors  : IFantace
- * @LastEditTime : 2020-12-11 16:44:31
+ * @LastEditTime : 2021-02-03 19:21:55
  * @Description  : 資料庫邏輯部分
  */
 
@@ -106,11 +106,11 @@ abstract class CommonRepository
      * search table
      *
      * @param string $query_string
-     * @param array $columns_not_search just array eq.["A","B","C"]
+     * @param array $columns_not_search just array eq.['A','B','C']
      * @param array $columns_change_search two-dimensional array
-     * eq. ["A"=> ["1" => "正常","0" => "關閉中","-1" => "申請中","-2" => "拒絕申請",]]
+     * eq. ['A'=> ['1' => '正常','0' => '關閉中','-1' => '申請中','-2' => '拒絕申請',]]
      * @param array $special_column two-dimensional array
-     * eq. ["A"=> ["1", "0", "-1", "-2"]]
+     * eq. ['A'=> ['1', '0', '-1', '-2']]
      *
      * @return $this
      */
@@ -120,17 +120,19 @@ abstract class CommonRepository
         array $columns_change_search = array(),
         array $columns_whereIn = array()
     ) {
+        // 添加轉換搜尋的key到不要搜尋的column
         $columns_not_search = array_merge($columns_not_search, array_keys($columns_change_search));
+        // 去除不要搜尋的欄位
         $columns = array_values(array_diff($this->columns, $columns_not_search));
-        $columns = array_values(array_diff($columns, ["created_at", "updated_at", "deleted_at"]));
+        // 去除系統時間
+        $columns = array_values(array_diff($columns, ['created_at', 'updated_at', 'deleted_at']));
         $this->model = $this->model->where(
             function ($query_all_column) use ($columns, $query_string, $columns_change_search, $columns_whereIn) {
+                // 搜尋要搜尋的欄位
                 foreach ($columns as $each_column) {
                     $query_all_column->orWhere($each_column, 'like', '%' . $query_string . '%');
                 }
-                foreach ($columns_whereIn as $column_name => $value_array) {
-                    $query_all_column->orWhereRaw($this->createWhereInRaw($column_name, $value_array));
-                }
+                // 搜尋轉換的欄位，例如'A'=> ['1' => '正常','0' => '關閉中','-1' => '申請中','-2' => '拒絕申請']，query_string = 正，對到1，用1去搜尋A欄位
                 foreach ($columns_change_search as $search_column_name => $change_key_array) {
                     foreach ($change_key_array as $inside_value => $outer_value) {
                         if (strpos($outer_value, $query_string) !== false) {
@@ -138,54 +140,141 @@ abstract class CommonRepository
                         }
                     }
                 }
+                // 用whereIn搜尋指定的欄位
+                foreach ($columns_whereIn as $column_name => $value_array) {
+                    $query_all_column->orWhereRaw($this->createWhereInRaw($column_name, $value_array));
+                }
             }
         );
         return $this;
     }
 
     /**
-     * get data with table format
+     * 轉換傳上來的table參數
+     *
+     * @param array $table_config
+     *
+     * @return void
+     *
+     * @author IFantace <aa431125@gmail.com>
+     */
+    private function convertTableConfig(array &$table_config)
+    {
+        if (isset($table_config['sort']) && !isset($table_config['orderBy'])) {
+            // sort 轉成 orderBy
+            $table_config['orderBy'] = $table_config['sort'];
+        }
+        if (isset($table_config['per_page']) && !isset($table_config['limit'])) {
+            // per_page 轉乘 limit
+            $table_config['limit'] = $table_config['per_page'];
+        }
+        if (isset($table_config['select'])) {
+            $table_config['select'] = is_array($table_config['select'])
+                ? $table_config['select']
+                : [$table_config['select']];
+        }
+        if (isset($table_config['orderBy'])) {
+            if (
+                strpos($table_config['orderBy'], '|') !== false
+                && !isset($table_config['ascending'])
+            ) {
+                $tmp_explode = explode('|', $table_config['orderBy']);
+                $table_config['orderBy'] = $tmp_explode['orderBy'];
+                $table_config['ascending'] = $tmp_explode['ascending'];
+            }
+        }
+    }
+
+    /**
+     * apply table config of sort, select, relation
      *
      * @param array $table_config config of table
-     * orderBy: "column name",
+     * orderBy: 'column name',
      * ascending: int => 1:ASC, 2:DESC,
-     * page: int => pagination,
-     * limit: int => count of each pagination and this time take,
      * select: array => column need to select,
      * with: array => search relation,
      * with_count: array => count relation
+     *
+     * @return void
+     *
+     * @author IFantace <aa431125@gmail.com>
+     */
+    private function applyTableConfig(array $table_config)
+    {
+        $this->convertTableConfig($table_config);
+        // 排序
+        if (isset($table_config['orderBy']) && isset($table_config['ascending'])) {
+            $this->model = $this->model->orderBy(
+                $table_config['orderBy'],
+                $table_config['ascending'] == 1
+                    ? 'ASC'
+                    : 'DESC'
+            );
+        }
+        // 關聯
+        if (isset($table_config['with'])) {
+            $this->model = $this->model->with($table_config['with']);
+        }
+        // 關聯數量
+        if (isset($table_config['with_count'])) {
+            $this->model = $this->model->withCount($table_config['with_count']);
+        }
+    }
+
+    /**
+     * get data with table format
+     *
+     * @param array $table_config config of table
+     * page: int => pagination,
+     * limit: int => count of each pagination and this time take,
      *
      * @return array
      */
     public function getTable(array $table_config)
     {
+        // 目前總數
         $count = $this->model->count();
-        if (isset($table_config['orderBy']) && isset($table_config['ascending'])) {
-            $orderBy = $table_config['orderBy'];
-            $ascending = $table_config['ascending'];
-            $this->model = $this->model->orderBy($orderBy, $ascending == 1 ? "ASC" : "DESC");
-        } else {
-            $this->model = $this->model->orderBy('created_at', "DESC");
-        }
+        // 套用排序功能
+        $this->applyTableConfig($table_config);
+        // 搜尋指定的跳頁
         if (isset($table_config['page']) && isset($table_config['limit'])) {
-            $page = $table_config['page'];
-            $limit = $table_config['limit'];
-            $this->model = $this->model->skip(($page - 1) * $limit);
+            $this->model = $this->model->skip(($table_config['page'] - 1) * $table_config['limit']);
         }
+        // 搜尋指定的數量
         if (isset($table_config['limit'])) {
             $limit = $table_config['limit'];
             $this->model = $this->model->take($limit);
         }
+        // 過濾要的欄位
         if (isset($table_config['select'])) {
             $this->model = $this->model->select($table_config['select']);
         }
-        if (isset($table_config["with"])) {
-            $this->model = $this->model->with($table_config['with']);
-        }
-        if (isset($table_config["with_count"])) {
-            $this->model = $this->model->withCount($table_config['with_count']);
-        }
+        // 取得資料
         $data = $this->model->get();
         return ['count' => $count, 'data' => $data];
+    }
+
+    /**
+     * 用laravel內建的paginate產生table格式查詢
+     *
+     * @param array $table_config
+     *
+     * @return \Illuminate\Pagination\LengthAwarePaginator
+     *
+     * @author IFantace <aa431125@gmail.com>
+     */
+    public function getTableByPaginate(array $table_config)
+    {
+        $this->applyTableConfig($table_config);
+        return $this->model->paginate(
+            isset($table_config['limit'])
+                ? $table_config['limit']
+                : null,
+            isset($table_config['select']) ? $table_config['select'] : ['*'],
+            'page',
+            isset($table_config['page'])
+                ? $table_config['page']
+                : null,
+        );
     }
 }
