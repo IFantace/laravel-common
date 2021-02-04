@@ -4,7 +4,7 @@
  * @Author       : IFantace
  * @Date         : 2020-11-30 17:46:45
  * @LastEditors  : IFantace
- * @LastEditTime : 2021-02-03 19:21:55
+ * @LastEditTime : 2021-02-04 17:18:39
  * @Description  : 資料庫邏輯部分
  */
 
@@ -179,8 +179,23 @@ abstract class CommonRepository
                 && !isset($table_config['ascending'])
             ) {
                 $tmp_explode = explode('|', $table_config['orderBy']);
-                $table_config['orderBy'] = $tmp_explode['orderBy'];
-                $table_config['ascending'] = $tmp_explode['ascending'];
+                if (count($tmp_explode) > 1) {
+                    $table_config['orderBy'] = $tmp_explode[0];
+                    $table_config['ascending'] = $tmp_explode[1];
+                }
+            }
+        }
+        if (isset($table_config['ascending'])) {
+            if (
+                strtolower($table_config['ascending'])  === "ascending"
+                || strtolower($table_config['ascending']) === "asc"
+            ) {
+                $table_config['ascending'] = 1;
+            } elseif (
+                strtolower($table_config['ascending']) === "descending"
+                || strtolower($table_config['ascending']) === "desc"
+            ) {
+                $table_config['ascending'] = 0;
             }
         }
     }
@@ -190,7 +205,7 @@ abstract class CommonRepository
      *
      * @param array $table_config config of table
      * orderBy: 'column name',
-     * ascending: int => 1:ASC, 2:DESC,
+     * ascending: int => 1:ASC, 0:DESC,
      * select: array => column need to select,
      * with: array => search relation,
      * with_count: array => count relation
