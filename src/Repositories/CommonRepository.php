@@ -4,7 +4,7 @@
  * @Author       : IFantace
  * @Date         : 2020-11-30 17:46:45
  * @LastEditors  : IFantace
- * @LastEditTime : 2021-02-04 17:18:39
+ * @LastEditTime : 2021-02-05 17:56:18
  * @Description  : 資料庫邏輯部分
  */
 
@@ -12,6 +12,7 @@ namespace Ifantace\LaravelCommon\Repositories;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Schema;
+use PDO;
 
 abstract class CommonRepository
 {
@@ -164,14 +165,24 @@ abstract class CommonRepository
             // sort 轉成 orderBy
             $table_config['orderBy'] = $table_config['sort'];
         }
-        if (isset($table_config['per_page']) && !isset($table_config['limit'])) {
-            // per_page 轉乘 limit
-            $table_config['limit'] = $table_config['per_page'];
+        if (isset($table_config['perPage']) && !isset($table_config['limit'])) {
+            // perPage 轉乘 limit
+            $table_config['limit'] = $table_config['perPage'];
         }
         if (isset($table_config['select'])) {
             $table_config['select'] = is_array($table_config['select'])
                 ? $table_config['select']
                 : [$table_config['select']];
+        }
+        if (isset($table_config['with'])) {
+            $table_config['with'] = is_array($table_config['with'])
+                ? $table_config['with']
+                : [$table_config['with']];
+        }
+        if (isset($table_config['withCount'])) {
+            $table_config['withCount'] = is_array($table_config['withCount'])
+                ? $table_config['withCount']
+                : [$table_config['withCount']];
         }
         if (isset($table_config['orderBy'])) {
             if (
@@ -208,7 +219,7 @@ abstract class CommonRepository
      * ascending: int => 1:ASC, 0:DESC,
      * select: array => column need to select,
      * with: array => search relation,
-     * with_count: array => count relation
+     * withCount: array => count relation
      *
      * @return void
      *
@@ -229,10 +240,16 @@ abstract class CommonRepository
         // 關聯
         if (isset($table_config['with'])) {
             $this->model = $this->model->with($table_config['with']);
+            if (isset($table_config['select'])) {
+                $table_config['select'] = array_merge($table_config['select'], $table_config['with']);
+            }
         }
         // 關聯數量
-        if (isset($table_config['with_count'])) {
-            $this->model = $this->model->withCount($table_config['with_count']);
+        if (isset($table_config['withCount'])) {
+            $this->model = $this->model->withCount($table_config['withCount']);
+            if (isset($table_config['select'])) {
+                $table_config['select'] = array_merge($table_config['select'], $table_config['withCount']);
+            }
         }
     }
 
