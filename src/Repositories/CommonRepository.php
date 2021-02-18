@@ -4,7 +4,7 @@
  * @Author       : IFantace
  * @Date         : 2020-11-30 17:46:45
  * @LastEditors  : IFantace
- * @LastEditTime : 2021-02-05 17:56:18
+ * @LastEditTime : 2021-02-18 20:01:43
  * @Description  : 資料庫邏輯部分
  */
 
@@ -225,7 +225,7 @@ abstract class CommonRepository
      *
      * @author IFantace <aa431125@gmail.com>
      */
-    private function applyTableConfig(array $table_config)
+    private function applyTableConfig(array &$table_config)
     {
         $this->convertTableConfig($table_config);
         // 排序
