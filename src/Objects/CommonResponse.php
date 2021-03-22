@@ -4,7 +4,7 @@
  * @Author       : IFantace
  * @Date         : 2020-11-30 17:46:45
  * @LastEditors  : IFantace
- * @LastEditTime : 2020-12-11 16:57:07
+ * @LastEditTime : 2021-03-22 18:08:28
  * @Description  : 自定義回應物件
  */
 
@@ -259,7 +259,7 @@ class CommonResponse
         }
         if (is_array($this->data)) {
             foreach ($this->data as $key => $value) {
-                $responseArray[$key] = $value;
+                $response_array[$key] = $value;
             }
         }
         if (isset($this->error)) {
