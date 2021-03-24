@@ -4,7 +4,7 @@
  * @Author       : IFantace
  * @Date         : 2020-12-11 11:45:28
  * @LastEditors  : IFantace
- * @LastEditTime : 2020-12-11 13:02:49
+ * @LastEditTime : 2021-03-24 16:57:59
  * @Description  : 常用的function
  */
 
@@ -146,5 +146,23 @@ final class CommonFunction
     {
         $d = DateTime::createFromFormat($format, $datetime);
         return $d && $d->format($format) == $datetime;
+    }
+
+    /**
+     * Return whereRaw content, which equal whereIn.
+     *
+     * @param string $column_name Column name.
+     * @param array $data_array Search array.
+     *
+     * @return string String of whereIn in whereRaw
+     *
+     * @author IFantace <aa431125@gmail.com>
+     */
+    public function createWhereInRaw($column_name, array $data_array)
+    {
+        if (count($data_array) == 0) {
+            return '1 = 0';
+        }
+        return $column_name . ' In (\'' . join('\',\'', $data_array) . '\')';
     }
 }

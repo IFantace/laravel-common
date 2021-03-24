@@ -4,7 +4,7 @@
  * @Author       : IFantace
  * @Date         : 2020-11-30 17:46:45
  * @LastEditors  : IFantace
- * @LastEditTime : 2021-03-22 18:08:28
+ * @LastEditTime : 2021-03-24 16:56:51
  * @Description  : 自定義回應物件
  */
 
@@ -242,7 +242,7 @@ class CommonResponse
      *
      * @return array
      */
-    private function createResponseArray()
+    public function createResponseArray()
     {
         $response_array = [
             "status" => $this->status,
