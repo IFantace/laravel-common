@@ -4,7 +4,7 @@
  * @Author       : IFantace
  * @Date         : 2020-12-11 11:45:28
  * @LastEditors  : IFantace
- * @LastEditTime : 2021-03-24 16:57:59
+ * @LastEditTime : 2021-03-24 17:15:06
  * @Description  : 常用的function
  */
 
@@ -158,7 +158,7 @@ final class CommonFunction
      *
      * @author IFantace <aa431125@gmail.com>
      */
-    public function createWhereInRaw($column_name, array $data_array)
+    final public static function createWhereInRaw($column_name, array $data_array)
     {
         if (count($data_array) == 0) {
             return '1 = 0';
