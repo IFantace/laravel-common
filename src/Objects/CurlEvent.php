@@ -4,7 +4,7 @@
  * @Author       : Austin
  * @Date         : 2020-03-25 17:09:18
  * @LastEditors  : IFantace
- * @LastEditTime : 2020-12-25 16:10:20
+ * @LastEditTime : 2021-04-21 10:43:29
  * @Description  : curl操作物件
  */
 
@@ -31,7 +31,7 @@ class CurlEvent
      *
      * @param string $url Url.
      * @param string $method Request method. 'GET', 'POST', 'PUT'...
-     * @param array $data Data. 含有兩部分[param,body]
+     * @param array $data Data. 含有兩部分[params,bodies]
      * @param array $header Headers.
      *
      * @return array|string
@@ -76,8 +76,8 @@ class CurlEvent
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
-        if (isset($data['body'])) {
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $data['body']);
+        if (isset($data['bodies'])) {
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $data['bodies']);
         }
         foreach ($options as $key => $value) {
             curl_setopt($ch, $key, $value);
