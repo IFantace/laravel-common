@@ -46,7 +46,7 @@ class CurlEvent
             CURLOPT_TIMEOUT => 15
         ]
     ) {
-        $send_microtime = microtime('now');
+        $send_microtime = microtime(true);
         $request_id = CommonFunction::generateRandomKey(8);
         Log::info(
             CommonFunction::createLogString(
@@ -85,7 +85,7 @@ class CurlEvent
             curl_setopt($ch, $key, $value);
         }
         $output = curl_exec($ch);
-        $receive_microtime = microtime('now');
+        $receive_microtime = microtime(true);
         $status_code = curl_errno($ch);
         Log::info(
             CommonFunction::createLogString(

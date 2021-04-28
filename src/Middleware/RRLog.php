@@ -4,7 +4,7 @@
  * @Author       : IFantace
  * @Date         : 2020-11-30 17:46:45
  * @LastEditors  : IFantace
- * @LastEditTime : 2021-04-28 12:11:57
+ * @LastEditTime : 2021-04-28 14:57:54
  * @Description  : 紀錄Request and Response
  */
 
@@ -26,7 +26,7 @@ class RRLog
      */
     public function handle($request, Closure $next)
     {
-        $receive_microtime = microtime('now');
+        $receive_microtime = microtime(true);
         $event_code = $request->input('event_code');
         if ($event_code  === null) {
             $event_code = CommonFunction::generateRandomKey(8);
@@ -70,7 +70,7 @@ class RRLog
         if (!is_array($content)) {
             $content = $response->getContent();
         }
-        $response_microtime = microtime('now');
+        $response_microtime = microtime(true);
         $response_log_string = CommonFunction::createLogString(
             'Response',
             [
