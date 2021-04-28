@@ -4,7 +4,7 @@
  * @Author       : IFantace
  * @Date         : 2020-11-30 17:46:45
  * @LastEditors  : IFantace
- * @LastEditTime : 2020-12-11 12:58:28
+ * @LastEditTime : 2021-04-28 12:11:57
  * @Description  : 紀錄Request and Response
  */
 
@@ -26,6 +26,7 @@ class RRLog
      */
     public function handle($request, Closure $next)
     {
+        $receive_microtime = microtime('now');
         $event_code = $request->input('event_code');
         if ($event_code  === null) {
             $event_code = CommonFunction::generateRandomKey(8);
@@ -39,7 +40,8 @@ class RRLog
                 'Method' => $request->method(),
                 'Url' => $request->fullUrl(),
                 'UserID' => $user == null ? null : $user->id,
-                'Parameters' => $request->all()
+                'Parameters' => $request->all(),
+                'StartAt' => $receive_microtime
             ],
             $event_code
         );
@@ -51,7 +53,8 @@ class RRLog
                     'Method' => $request->method(),
                     'Url' => $request->fullUrl(),
                     'UserID' => $user == null ? null : $user->id,
-                    'Parameters' => "Too long"
+                    'Parameters' => "Too long",
+                    'StartAt' => $receive_microtime
                 ],
                 $event_code
             );
@@ -67,11 +70,14 @@ class RRLog
         if (!is_array($content)) {
             $content = $response->getContent();
         }
+        $response_microtime = microtime('now');
         $response_log_string = CommonFunction::createLogString(
             'Response',
             [
                 'StatusCode' => $response->getStatusCode(),
-                'Content' => $content
+                'Content' => $content,
+                'EndAt' => $response_microtime,
+                'TotalTime' => $response_microtime - $receive_microtime
 
             ],
             $event_code
@@ -81,8 +87,9 @@ class RRLog
                 'Response',
                 [
                     'StatusCode' => $response->getStatusCode(),
-                    'Content' => "Too long"
-
+                    'Content' => "Too long",
+                    'EndAt' => $response_microtime,
+                    'TotalTime' => $response_microtime - $receive_microtime
                 ],
                 $event_code
             );

@@ -4,7 +4,7 @@
  * @Author       : Austin
  * @Date         : 2020-03-25 17:09:18
  * @LastEditors  : IFantace
- * @LastEditTime : 2021-04-21 10:43:29
+ * @LastEditTime : 2021-04-28 12:25:47
  * @Description  : curl操作物件
  */
 
@@ -46,6 +46,7 @@ class CurlEvent
             CURLOPT_TIMEOUT => 15
         ]
     ) {
+        $send_microtime = microtime('now');
         $request_id = CommonFunction::generateRandomKey(8);
         Log::info(
             CommonFunction::createLogString(
@@ -55,7 +56,8 @@ class CurlEvent
                     'Header' => $header,
                     'Data' => CommonFunction::jsonEncodeUnescaped($data),
                     'Option' => $options,
-                    'RequestID' => $request_id
+                    'RequestID' => $request_id,
+                    'StartAt' => $send_microtime
                 ],
                 $this->event_code
             )
@@ -83,6 +85,7 @@ class CurlEvent
             curl_setopt($ch, $key, $value);
         }
         $output = curl_exec($ch);
+        $receive_microtime = microtime('now');
         $status_code = curl_errno($ch);
         Log::info(
             CommonFunction::createLogString(
@@ -90,7 +93,9 @@ class CurlEvent
                 [
                     'StatusCode' => $status_code,
                     'ResponseBody' => $status_code == 0 ? $output : null,
-                    'RequestID' => $request_id
+                    'RequestID' => $request_id,
+                    'EndAt' => $receive_microtime,
+                    'TotalTime' => $receive_microtime - $send_microtime
                 ],
                 $this->event_code
             )
@@ -105,7 +110,7 @@ class CurlEvent
                     'CurlError',
                     [
                         'ErrorMessage' => $error,
-                        'RequestID' => $request_id
+                        'RequestID' => $request_id,
                     ],
                     $this->event_code
                 )
