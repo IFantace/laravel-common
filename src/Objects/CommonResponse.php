@@ -4,7 +4,7 @@
  * @Author       : IFantace
  * @Date         : 2020-11-30 17:46:45
  * @LastEditors  : IFantace
- * @LastEditTime : 2021-03-24 16:56:51
+ * @LastEditTime : 2021-05-11 16:37:19
  * @Description  : 自定義回應物件
  */
 
@@ -319,4 +319,127 @@ class CommonResponse
     //     $this_exception->setResponse($response_array);
     //     throw $this_exception;
     // }
+
+    /**
+     * Get 狀態碼
+     *
+     * @return int
+     *
+     * @author IFantace <aa431125@gmail.com>
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * Get message
+     *
+     * @return string
+     *
+     * @author IFantace <aa431125@gmail.com>
+     */
+    public function getMessage()
+    {
+        return $this->message;
+    }
+
+    /**
+     * Get ui_message
+     *
+     * @return string
+     *
+     * @author IFantace <aa431125@gmail.com>
+     */
+    public function getUiMessage()
+    {
+        return $this->ui_message;
+    }
+
+    /**
+     * Get file
+     *
+     * @return string
+     *
+     * @author IFantace <aa431125@gmail.com>
+     */
+    public function getFile()
+    {
+        return $this->file;
+    }
+
+    /**
+     * Get class
+     *
+     * @return string
+     *
+     * @author IFantace <aa431125@gmail.com>
+     */
+    public function getClass()
+    {
+        return $this->class;
+    }
+
+    /**
+     * Get function
+     *
+     * @return string
+     *
+     * @author IFantace <aa431125@gmail.com>
+     */
+    public function getFunction()
+    {
+        return $this->function;
+    }
+
+    /**
+     * Get line
+     *
+     * @return int
+     *
+     * @author IFantace <aa431125@gmail.com>
+     */
+    public function getLine()
+    {
+        return $this->line;
+    }
+
+    /**
+     * Get message
+     *
+     * @return string
+     *
+     * @author IFantace <aa431125@gmail.com>
+     */
+    public function getEventCode()
+    {
+        return $this->event_code;
+    }
+
+    /**
+     * Set message
+     *
+     * @param string $event_code message
+     *
+     * @return $this
+     *
+     * @author IFantace <aa431125@gmail.com>
+     */
+    public function setEventCode(string $event_code)
+    {
+        $this->event_code = $event_code;
+        return $this;
+    }
+
+    /**
+     * Get data
+     *
+     * @return array
+     *
+     * @author IFantace <aa431125@gmail.com>
+     */
+    public function getData()
+    {
+        return $this->data;
+    }
 }
