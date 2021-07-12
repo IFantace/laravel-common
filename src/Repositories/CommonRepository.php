@@ -4,7 +4,7 @@
  * @Author       : IFantace
  * @Date         : 2020-11-30 17:46:45
  * @LastEditors  : IFantace
- * @LastEditTime : 2021-02-18 20:01:43
+ * @LastEditTime : 2021-07-13 06:19:38
  * @Description  : 資料庫邏輯部分
  */
 
@@ -306,7 +306,7 @@ abstract class CommonRepository
             'page',
             isset($table_config['page'])
                 ? $table_config['page']
-                : null,
+                : null
         );
     }
 }
